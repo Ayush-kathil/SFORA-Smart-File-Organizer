@@ -1,0 +1,17 @@
+# Smart File Organizer Rules Configuration (rules.txt)
+# 
+# Syntax: CONDITION_TYPE=pattern,FOLDER=TargetFolder
+# Supports two condition types: KEYWORD and EXTENSION
+
+# Examples of Keyword Rules
+KEYWORD=assignment,FOLDER=University/Assignments
+KEYWORD=project,FOLDER=University/Projects
+KEYWORD=invoice,FOLDER=Finances/Invoices
+KEYWORD=tax,FOLDER=Finances/Taxes
+KEYWORD=holiday,FOLDER=Personal/Vacations
+
+# Example of overriding Extensions
+# Normally, PDFs go to 'Documents', but you might want them elsewhere.
+EXTENSION=pdf,FOLDER=Documents/PDFs
+EXTENSION=epub,FOLDER=Documents/Books
+EXTENSION=torrent,FOLDER=Downloads/Torrents
