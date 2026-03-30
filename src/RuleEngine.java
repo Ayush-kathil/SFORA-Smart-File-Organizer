@@ -4,79 +4,69 @@ import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Reads my custom rules.txt file so I can tell the program exactly where
- * specific files should go based on their names or extensions.
- */
 public class RuleEngine {
-
-    // storing rules as a map: pattern -> destination folder
-    // checking both keyword (in filename) and straight extensions
-    private Map<String, String> keywordRules = new HashMap<>();
-    private Map<String, String> extensionRules = new HashMap<>();
+    
+    // mapping conditions from the text file into memory
+    private Map<String, String> keyRules = new HashMap<>();
+    private Map<String, String> extRules = new HashMap<>();
 
     public RuleEngine() {
-        loadRules("rules.txt");
+        loadRules();
     }
 
-    private void loadRules(String fileName) {
-        File ruleFile = new File(fileName);
-        if (!ruleFile.exists()) {
-            System.out.println("No rules.txt found. I'll just use the default folders.");
-            return;
+    private void loadRules() {
+        File file = new File("rules.txt");
+        if (!file.exists()) {
+            return; // no big deal, we just use the default folder mapping
         }
 
-        try (BufferedReader br = new BufferedReader(new FileReader(ruleFile))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
-            while ((line = br.readLine()) != null) {
-                // skip empty lines or comments
-                if (line.trim().isEmpty() || line.startsWith("#")) {
-                    continue;
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+                if (line.isEmpty() || line.startsWith("#")) {
+                    continue; // skip comments
                 }
 
-                // expecting stuff like: KEYWORD=assignment,FOLDER=University
-                String[] parts = line.split(",");
-                if (parts.length == 2) {
-                    String condition = parts[0].trim();
-                    String folder = parts[1].trim();
-
-                    String[] condSplit = condition.split("=");
-                    String[] foldSplit = folder.split("=");
-
-                    if (condSplit.length == 2 && foldSplit.length == 2) {
-                        String type = condSplit[0].toUpperCase();
-                        String pattern = condSplit[1].toLowerCase();
-                        String dest = foldSplit[1];
+                // parse lines like KEYWORD=finance,FOLDER=Taxes
+                String[] split = line.split(",");
+                if (split.length == 2) {
+                    try {
+                        String type = split[0].split("=")[0].toUpperCase();
+                        String condition = split[0].split("=")[1].toLowerCase();
+                        String destFolder = split[1].split("=")[1];
 
                         if (type.equals("KEYWORD")) {
-                            keywordRules.put(pattern, dest);
+                            keyRules.put(condition, destFolder);
                         } else if (type.equals("EXTENSION")) {
-                            extensionRules.put(pattern, dest);
+                            extRules.put(condition, destFolder);
                         }
+                    } catch (Exception badFormat) {
+                        System.out.println("Skipping a broken rule line: " + line);
                     }
                 }
             }
         } catch (Exception e) {
-            System.out.println("Oops, couldn't read the rules file: " + e.getMessage());
+            System.out.println("Trouble reading the rules: " + e.getMessage());
         }
     }
 
-    // Checking if a file matches any of our custom rules
-    public String getTargetFolderForRule(String filename, String extension) {
-        filename = filename.toLowerCase();
+    // returns the folder name if it matches a custom rule, otherwise null
+    public String checkRules(String fileName, String extension) {
+        fileName = fileName.toLowerCase();
         
-        // try keywords first
-        for (Map.Entry<String, String> entry : keywordRules.entrySet()) {
-            if (filename.contains(entry.getKey())) {
-                return entry.getValue();
+        // keywords first because they are more specific (like "assignment.pdf" should go to University, not just Documents)
+        for (String key : keyRules.keySet()) {
+            if (fileName.contains(key)) {
+                return keyRules.get(key);
             }
         }
 
-        // try extension overrides next
-        if (extension != null && extensionRules.containsKey(extension.toLowerCase())) {
-            return extensionRules.get(extension.toLowerCase());
+        // override extensions next
+        if (extension != null && extRules.containsKey(extension.toLowerCase())) {
+            return extRules.get(extension.toLowerCase());
         }
 
-        return null; // no rule matched
+        return null; // fallback to hardcoded types in the organizer
     }
 }

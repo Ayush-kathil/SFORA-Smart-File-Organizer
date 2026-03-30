@@ -1,57 +1,54 @@
-# SFORA: Smart File Organizer
+# Smart File Organizer (SFORA)
 
-Honestly, my Downloads folder was an absolute disaster. I couldn't find a single PDF or image because everything was just dumped into one massive list. I got tired of manually dragging files around every week, so I decided to learn file I/O and build **SFORA** over a couple of late nights.
+My computer's `Downloads` folder is generally an absolute disaster. Every semester it just fills up with thousands of random PDFs from university, tons of project images, zip files, and identical assignment duplicates. I finally got annoyed with manually dragging files around every single week, so I decided to learn native Java file I/O and build **SFORA** over a weekend to completely automate the process.
 
-It’s a command-line tool that just *reads your messy folder* and automatically moves all the files into neat folders like `Documents`, `Images`, and `Archives` based on their type. It even lets you set custom rules in a text file.
+**Note: This is a 100% pure Java project. It utilizes exactly zero external dependencies, libraries, or APIs. It leverages native `java.io.*` and `java.nio.file.*` standard libraries to safely achieve everything.**
 
-## Why did I build this?
-1. **Automation**: Why do manually what Java can do in literally 30 milliseconds?
-2. **Duplicate Finding**: I kept downloading the same assignment files (`project(1).pdf`, `project(2).pdf`). SFORA actually reads the byte hash of the file and catches identical duplicates!
-3. **Fear of Mistakes**: Moving hundreds of files at once is scary. I added a **Dry Run (Preview)** mode so I can see what it *will* do before it actually touches my hard drive.
-4. **Undo Saves Lives**: I built a `FileLogger` module. Every single time a file gets moved, it logs the exact path to an `action_log.txt` file. If I mess up, I can just select "Undo All Changes" and it literally puts the entire directory back exactly how it was!
+## What it Does (Best Features)
+1. **Total Auto-Organization**: Just point it at a messy folder and it scoops everything up, organizing the clutter logically into dedicated folders like `Documents/` and `Images/` based on extensions.
+2. **Custom Rules**: You can edit the `rules.txt` config file. Tell it to specifically snag anything with the word "finance" in the file name and dump it into a `Taxes/` folder, completely ignoring its extension.
+3. **Dry Run (Preview Mode)**: I was honestly terrified of running it for the first time and dumping my entire hard drive somewhere I couldn't find it. So I built a "Preview changes" mode. It just simulates the logic and spits out what *would* happen (without actually moving a single file).
+4. **Permanent Undo Tracker**: Every move is appended straight to an `action_log.txt` file. You can close the app entirely, run it exactly a week later, select `Undo all changes`, and the program natively parses the text log backward and perfectly restores every single file.
+5. **Advanced Space Saver**: I added an advanced filter option that allows you to specify a Megabyte threshold (e.g. > `500` MB). The program actively hunts down giant forgotten video/ISO files and surgically extracts them into a `BigFiles/` folder.
+6. **Fast Dupe Checking & Filename Cleaning**: Easily removes awful invisible character spaces from file names and catches exact duplicates by cross-checking matching file sizes + name attributes natively.
 
-## Cool Features I Added
-- **Interactive UI**: No confusing flags or commands. Just run the file and follow the 1-7 menu.
-- **Safe Mode**: It will prompt you `Are you sure? (y/n)` before it ruins your folder structure if you want it to.
-- **Large File Detector**: Warns you if there are giant files (like 4GB video files) taking up space during a preview scan!
-- **Empty Folder Cleaner**: SFORA deletes left-behind empty folders so things stay pristine.
+## How to run it
 
-## How to use it
-It’s completely written in core Java, so there’s no weird setups required.
-Just compile the 6 files like this:
-```
+Because it explicitly avoids complex build wrappers, you can test it on any machine running a JVM instantaneously:
+
+1. Compile the 5 root `.java` source files inside the `src/` directory:
+```bash
 mkdir bin
 javac -d bin src/*.java
 ```
 
-And then run the entry point:
-```
+2. Run the main app!
+```bash
 java -cp bin Main
 ```
 
-### Sample Output (Dry Run)
+## Sample Output
+```text
+---------------------------------
+SMART FILE ORGANIZER
+---------------------------------
+Enter folder path:
+> C:\Downloads
+
+Then show options:
+1. Organize files (recommended)
+2. Preview changes (no files will be moved)
+3. Undo last change
+4. Undo all changes
+5. Find duplicate files
+6. Clean file names
+7. Extract large files (Space Saver)
+8. Exit
+> 7
+Enter size limit in MB (e.g., 50): 100
+Moved huge file: big_system_image.iso (1400MB)
+
+Isolated 1 huge files into the 'BigFiles' folder.
 ```
-What would you like to do?
-1 - Start File Organizer
-2 - Undo Last Operation
-3 - Undo All Changes (Full Rollback)
-4 - Preview Changes (Dry Run)
-5 - Clean File Names Automatically
-6 - Find Exact Duplicates
-7 - Exit Program
-> Pick an option (1-7): 4
 
---- DRY RUN (Preview) ---
-No actual files will be moved during this preview.
-
-WILL MOVE: math_assignment.pdf -> C:\Downloads\University\math_assignment.pdf
-WILL MOVE: funny_cat.jpg -> C:\Downloads\Images\funny_cat.jpg
-
---- Predicted Summary ---
-Total Files to Route: 2
-Giant Files (>100MB): 0 (might want to check these!)
-Total Size Organized: 34 MB
-------------------------
-```
-
-Hope this saves you as much time as it saved me!
+Hope this tool natively cleans up your filesystem!
