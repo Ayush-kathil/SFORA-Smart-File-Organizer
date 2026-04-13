@@ -1,0 +1,10 @@
+# Build output
+bin/
+*.class
+
+# Runtime artifacts
+action_log.txt
+
+# OS/editor noise
+.DS_Store
+Thumbs.db

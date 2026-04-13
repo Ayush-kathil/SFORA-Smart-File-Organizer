@@ -1,0 +1,29 @@
+[2026-04-06 23:15:55] mode=hybrid root=C:\Users\donay\Downloads
+moved=38, emptyFoldersDeleted=6
+  - Audio: 2
+  - Code: 8
+  - Images: 4
+  - Misc: 5
+  - PDFs: 10
+  - Spreadsheets: 2
+  - Text: 6
+  - Video: 1
+
+[2026-04-06 23:47:35] mode=rules root=C:\Users\donay\Downloads
+moved=9, emptyFoldersDeleted=1
+  - PDFs: 9
+
+[2026-04-06 23:48:24] mode=rules root=C:\Users\donay\Downloads
+moved=9, emptyFoldersDeleted=0
+  - PDFs: 9
+
+[2026-04-07 01:47:54] mode=rules root=C:\Users\donay\Downloads
+moved=11, emptyFoldersDeleted=0
+  - PDFs: 9
+  - Projects: 2
+
+[2026-04-07 01:48:56] mode=rules root=C:\Users\donay\Downloads
+moved=11, emptyFoldersDeleted=0
+  - PDFs: 9
+  - Projects: 2
+
