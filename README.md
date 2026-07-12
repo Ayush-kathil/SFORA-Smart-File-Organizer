@@ -1,83 +1,116 @@
-# File Organizer Project (SFORA)
+<h1 align="center">SFORA - Smart File Organizer</h1>
 
-This is a Java-based desktop application designed to automatically sort and clean up messy directories (like a typical `Downloads` folder). It organizes files into appropriate sub-folders based on file extensions or custom keywords. The project uses only the Java standard library (`java.io`, `java.nio`, `javax.swing`) and does not require external dependencies.
+<p align="center">
+An intelligent desktop application for categorizing, deduplicating, and normalizing files automatically using configurable rules and a graphical interface.
+</p>
 
-## 📌 Project Overview
-The application functions as a hybrid tool. When executed, it allows the user to run standard Terminal interactions (CLI) or a graphical window (GUI). The core mechanism recursively iterates through the selected directory tree (including folders inside folders), physically moves files using `Files.move()` into target folders according to simple conditions, and automatically removes empty subfolders left behind.
+## Overview
 
-## ✨ Key Features
-1. **Hybrid Interface**: Supports both a command-line prompt and an advanced Swing control panel.
-2. **Smart Folder Structure**: Automatically reads file extensions and places files into clean nested folders such as `Documents/Text`, `Media/Images`, `Media/Audio`, `Development/Code`, `Installers`, and more.
-3. **Recursive Processing**: Sorting, previewing, duplicate scanning, filename cleanup, and large-file extraction all work across nested folders.
-4. **Auto Empty-Folder Cleanup**: After file move operations, empty subfolders are deleted automatically.
-5. **Easy-To-Type File Names**: Files are automatically normalized to type-friendly names (example: `My Summer Photo (Final).JPG` becomes `my-summer-photo-final.jpg`).
-6. **Custom Sorting Rules**: The application reads a local `rules.txt` file at runtime. You can specify custom mapping (e.g., if a file name contains "assignment", force it to a `/University` folder).
-7. **Accurate Duplicate Finder**: Finds duplicates using content fingerprints (SHA-256), not just name/size guesses.
-8. **Action Logging (Undo)**: Every file move or filename cleanup is recorded in `action_log.txt` so changes can be reversed later.
-9. **Run Report Logging**: Each organize/extract run appends a short summary to `organize_report.txt` (mode, moved file count, and category totals).
-10. **Big File Search**: Scans and isolates massive video or zip files exceeding a specified Megabyte limit into a separate folder.
-11. **Rules Management**: Rules can be reloaded from disk, opened directly, and edited from inside the GUI.
-12. **Mode-Aware Preview**: Preview follows the selected organize mode instead of hardcoding a single behavior.
-13. **Pre-Move Confirmation**: Organize actions now show a detailed move plan before files are changed.
-14. **Automated Self-Tests**: A built-in test runner covers rules, undo, and filename normalization.
+SFORA is a Java-based utility designed to automate file organization. It scans target directories and intelligently relocates files into a structured hierarchy. The system operates on a dual-mode engine, allowing classification through explicitly defined keyword and extension rules, or via built-in default categorizations. 
 
-## 🗂️ Default Folder Layout
-When no custom rule matches, files are organized using this structure:
+It provides both a Command Line Interface (CLI) and a Swing-based Graphical User Interface (GUI), ensuring flexibility for different deployment environments and user preferences.
 
-- `Documents/Text`
-- `Documents/Spreadsheets`
-- `Documents/Presentations`
-- `Media/Images`
-- `Media/Audio`
-- `Media/Video`
-- `Archives/Compressed`
-- `Development/Code`
-- `Installers`
-- `Misc`
+## Key Features
 
-## 🖥️ Advanced GUI Highlights
-- Dashboard-style layout with dedicated operations panel and live output panel.
-- Busy state protection to prevent conflicting actions from running at the same time.
-- Organize mode selector (`hybrid`, `rules`, `default`) and configurable large-file threshold.
-- Organize mode selector (`hybrid`, `rules`, `default`) and configurable large-file threshold.
-- Advanced folder selection with quick shortcuts (Documents, Downloads, Desktop), recent-folder memory, and live folder insights (file/folder count + size).
-- User comfort and safety controls including `Safe mode` and optional hidden-file scanning.
-- Direct action buttons for organize, preview, rename cleanup, duplicate scan, big-file extraction, undo, and report viewing.
-- Built-in rules editor plus reload/open actions for `rules.txt`.
-- Real-time status badge and progress indicator while background tasks run.
+- **Rule-Based Routing**: Define destination paths based on filename keywords or extensions using a plaintext configuration file (`rules.txt`).
+- **Content-Based Deduplication**: Identifies exact duplicate files by computing and comparing SHA-256 cryptographic hashes of their contents.
+- **Filename Normalization**: Cleans chaotic filenames by replacing special characters, collapsing whitespace, and enforcing consistent casing.
+- **Large File Extraction**: Scans and segregates files exceeding a user-defined size threshold into a dedicated directory.
+- **Preview Mechanism**: Generates an execution plan detailing proposed file movements without making disk modifications.
+- **Journaled Undo System**: Records all file operations in a persistent action log (`action_log.txt`), enabling single-step or full-state rollbacks.
+- **Directory Safety Filters**: Skips version control directories (`.git`), IDE configuration folders (`.idea`), and internal application files to prevent accidental corruption.
 
-## 📂 File Structure
-The project is intentionally kept simple and compressed into three fundamental Java files:
-*   `App.java`: Contains the `main` method. It prompts the user for CLI/GUI selection and houses the `Scanner` terminal loop.
-*   `GUI.java`: Contains the advanced operator-style Swing interface, background task handling, and live output capture.
-*   `Sorter.java`: Facade that coordinates the smaller services.
-*   `RuleEngine.java`: Loads and resolves custom file rules.
-*   `FolderScanner.java`: Applies safety rules while collecting files.
-*   `FileNameNormalizer.java`: Normalizes filenames and avoids collisions.
-*   `UndoJournal.java`: Records and restores move operations.
-*   `OrganizePlan.java` and `FileMoveCandidate.java`: Represent the preview/confirmation diff.
-*   `SforaTests.java`: Self-contained automated test runner.
+## System Architecture
 
-## 💻 How to Compile & Run
+The application follows a modular architecture separating the execution engine, rule processing, and user interfaces.
 
-To evaluate the application, open your terminal (Command Prompt, PowerShell, or bash) in the root directory where the `src/` folder is located.
+```text
+       CLI Mode                           GUI Mode (Swing)
+          │                                      │
+          └─────────────────┬────────────────────┘
+                            │
+                            ▼
+                    Sorter (Controller)
+                            │
+       ┌────────────────────┼────────────────────┐
+       ▼                    ▼                    ▼
+ FolderScanner         RuleEngine           UndoJournal
+ (Traversal &         (Classification)     (State Tracking)
+  Safety Checks)            │                    │
+       │                    ▼                    ▼
+       └──────────────► OrganizePlan ◄───────────┘
+                            │
+                            ▼
+                       File System
+```
 
-`bin/` is generated during compilation, so it may be missing before the first build.
+## Project Structure
 
-**Step 1. Compile the code:**
+```text
+src/
+ ├── App.java                   // Application entry point; CLI implementation
+ ├── GUI.java                   // Main Swing application window and event handling
+ ├── Sorter.java                // Core controller bridging logic and UI
+ ├── FolderScanner.java         // Recursive directory traversal with safety exclusions
+ ├── RuleEngine.java            // Parses rules.txt and computes target destinations
+ ├── FileNameNormalizer.java    // String manipulation utility for sanitizing filenames
+ ├── UndoJournal.java           // Transaction log manager for rollback support
+ ├── OrganizePlan.java          // Data model containing the computed execution plan
+ ├── FileMoveCandidate.java     // Data model representing a single file transfer
+ └── SforaTests.java            // Test harness
+```
+
+## Design Decisions
+
+- **Two-Pass Execution**: The system separates evaluation from execution. `Sorter` first generates an `OrganizePlan` containing `FileMoveCandidate` objects. This allows the GUI and CLI to present a preview before executing any blocking I/O operations.
+- **Transaction Logging**: To implement the undo feature, `UndoJournal` writes source and destination paths to a persistent log upon every successful move. During a rollback, it reads the log in reverse order, verifying file existence before attempting restoration.
+- **Dependency Minimization**: The project relies exclusively on the standard Java library (`java.io`, `java.nio`, `javax.swing`). This eliminates external dependencies and simplifies the build process.
+- **Safe Traversal**: `FolderScanner` maintains static sets of restricted directory names (e.g., `node_modules`, `build`) and verifies paths against the application's working directory to prevent recursive modification of source code.
+
+## Technology Stack
+
+- **Java SE**: Core programming language.
+- **Java Swing**: Graphical user interface components.
+- **Java NIO**: Non-blocking I/O file operations and path manipulation.
+- **java.security.MessageDigest**: SHA-256 implementation for duplicate detection.
+- **Collections Framework**: Data structures for tracking execution plans and rules.
+
+## Installation and Execution
+
+The project requires a standard Java Development Kit (JDK). No external build tools are strictly required.
+
+### Compiling from Source
+
+Navigate to the project root and compile the source files into the `bin` directory:
+
 ```bash
 mkdir bin
 javac -d bin src/*.java
 ```
 
-**Step 2. Run the program:**
+### Running the Application
+
+Execute the compiled classes. If invoked without standard input redirection, the application defaults to GUI mode.
+
 ```bash
 java -cp bin App
 ```
 
-**Step 3. Run the automated tests:**
-```bash
-java -cp bin SforaTests
+To force the CLI mode, interact with the terminal prompt upon execution.
+
+## Configuration
+
+Rules are defined in `rules.txt` located in the working directory. The syntax supports basic keyword and extension mapping.
+
+```text
+# Example Configuration
+KEYWORD=invoice, Documents/Financial
+EXTENSION=pdf, Documents/PDFs
+EXTENSION=log, Misc/Logs
 ```
 
-*Note: Once executed, simply follow the on-screen prompts to navigate between the Terminal and Graphical window.*
+The application attempts to reload these rules dynamically when initiated or manually refreshed. If no rule matches, the system falls back to a hardcoded mapping mechanism categorizing standard formats (e.g., audio, images, code).
+
+## License
+
+This project is provided as-is without any warranties. See repository details for specific licensing terms.
