@@ -251,5 +251,5 @@ For serious inquiries or support, please open a GitHub Issue or reach out via th
 Distributed under the MIT License. See `LICENSE` (if present) for more information.
 
 ---
-*Generated with 💻 and ☕.*
+
 <p align="right"><a href="#table-of-contents">⬆ Back to Top</a></p>
