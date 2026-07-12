@@ -29,49 +29,49 @@
 <details>
 <summary>Click to expand</summary>
 
-1. [Motivation](#1-motivation)
-2. [Prerequisites](#2-prerequisites)
-3. [Quick Start Guide](#3-quick-start-guide)
-4. [Screenshots](#4-screenshots)
-5. [CLI vs. GUI Feature Matrix](#5-cli-vs-gui-feature-matrix)
-6. [Supported File Types](#6-supported-file-types)
-7. [Architecture](#7-architecture)
-8. [Configuration Deep Dive](#8-configuration-deep-dive)
-9. [Detailed Usage Examples](#9-detailed-usage-examples)
-10. [Safe Mode & Security](#10-safe-mode--security)
-11. [Deduplication Algorithm](#11-deduplication-algorithm)
-12. [Undo Mechanism](#12-undo-mechanism)
-13. [Performance & Benchmarks](#13-performance--benchmarks)
-14. [Testing Instructions](#14-testing-instructions)
-15. [Environment Variables](#15-environment-variables)
-16. [Error Handling & Logs](#16-error-handling--logs)
-17. [Build Automation Notes](#17-build-automation-notes)
-18. [Troubleshooting Guide](#18-troubleshooting-guide)
-19. [Uninstall & Cleanup](#19-uninstall--cleanup)
-20. [Data Privacy Statement](#20-data-privacy-statement)
-21. [Known Limitations](#21-known-limitations)
-22. [Roadmap](#22-roadmap)
-23. [Contributing Guidelines](#23-contributing-guidelines)
-24. [Issue Reporting](#24-issue-reporting)
-25. [Code of Conduct](#25-code-of-conduct)
-26. [FAQ](#26-faq)
-27. [Acknowledgments](#27-acknowledgments)
-28. [Changelog](#28-changelog)
-29. [Contact & Maintainer Info](#29-contact--maintainer-info)
-30. [License](#30-license)
+- [Motivation](#1-motivation)
+- [Prerequisites](#2-prerequisites)
+- [Quick Start Guide](#3-quick-start-guide)
+- [Screenshots](#4-screenshots)
+- [CLI vs. GUI Feature Matrix](#5-cli-vs-gui-feature-matrix)
+- [Supported File Types](#6-supported-file-types)
+- [Architecture](#7-architecture)
+- [Configuration Deep Dive](#8-configuration-deep-dive)
+- [Detailed Usage Examples](#9-detailed-usage-examples)
+- [Safe Mode & Security](#10-safe-mode--security)
+- [Deduplication Algorithm](#11-deduplication-algorithm)
+- [Undo Mechanism](#12-undo-mechanism)
+- [Performance & Benchmarks](#13-performance--benchmarks)
+- [Testing Instructions](#14-testing-instructions)
+- [Environment Variables](#15-environment-variables)
+- [Error Handling & Logs](#16-error-handling--logs)
+- [Build Automation Notes](#17-build-automation-notes)
+- [Troubleshooting Guide](#18-troubleshooting-guide)
+- [Uninstall & Cleanup](#19-uninstall--cleanup)
+- [Data Privacy Statement](#20-data-privacy-statement)
+- [Known Limitations](#21-known-limitations)
+- [Roadmap](#22-roadmap)
+- [Contributing Guidelines](#23-contributing-guidelines)
+- [Issue Reporting](#24-issue-reporting)
+- [Code of Conduct](#25-code-of-conduct)
+- [FAQ](#26-faq)
+- [Acknowledgments](#27-acknowledgments)
+- [Changelog](#28-changelog)
+- [Contact & Maintainer Info](#29-contact--maintainer-info)
+- [License](#30-license)
 
 </details>
 
 ---
 
-## 1. Motivation
+## $\color{#58a6ff}{\\textsf{Motivation}}$
 Managing file clutter manually is a tedious, error-prone process. SFORA was built to provide a deterministic, rule-based approach to file management, eliminating the chaos of "Downloads" folders while retaining a safety-first mindset.
 
-## 2. Prerequisites
+## $\color{#58a6ff}{\\textsf{Prerequisites}}$
 - **Java Development Kit (JDK) 17** or higher.
 - Write permissions to the target directories.
 
-## 3. Quick Start Guide
+## $\color{#58a6ff}{\\textsf{Quick Start Guide}}$
 Get up and running in three steps:
 
 1. **Clone the repo:**
@@ -89,14 +89,14 @@ Get up and running in three steps:
    java -cp bin App
    ```
 
-## 4. Screenshots
+## $\color{#58a6ff}{\\textsf{Screenshots}}$
 *Placeholders for upcoming demonstration media.*
 
 | GUI Mode | CLI Mode |
 | :---: | :---: |
 | ![GUI Placeholder](https://via.placeholder.com/400x250?text=GUI+Screenshot) | ![CLI Placeholder](https://via.placeholder.com/400x250?text=CLI+Screenshot) |
 
-## 5. CLI vs. GUI Feature Matrix
+## $\color{#58a6ff}{\\textsf{CLI vs. GUI Feature Matrix}}$
 | Feature | CLI | GUI |
 |---------|:---:|:---:|
 | Execute Organize Rules | ✅ | ✅ |
@@ -107,7 +107,7 @@ Get up and running in three steps:
 | Graphical Progress Bar | ❌ | ✅ |
 | Interactive Checkboxes | ❌ | ✅ |
 
-## 6. Supported File Types
+## $\color{#58a6ff}{\\textsf{Supported File Types}}$
 SFORA handles categorization automatically if rules aren't specified.
 <details>
 <summary>View Built-in Categories</summary>
@@ -123,7 +123,7 @@ SFORA handles categorization automatically if rules aren't specified.
 - **Installers**: `exe`, `msi`, `apk`, `dmg`, `deb`
 </details>
 
-## 7. Architecture
+## $\color{#58a6ff}{\\textsf{Architecture}}$
 <!-- UI Issue 2: Plain Architecture Diagram -> Mermaid -->
 ```mermaid
 graph TD
@@ -139,7 +139,7 @@ graph TD
     F -->|Log| J(action_log.txt)
 ```
 
-## 8. Configuration Deep Dive
+## $\color{#58a6ff}{\\textsf{Configuration Deep Dive}}$
 The `rules.txt` file uses a simple key-value parser.
 ```ini
 # Syntax: RULE_TYPE=value, Destination/Folder
@@ -148,7 +148,7 @@ EXTENSION=log, Misc/Logs
 ```
 *Note: Rules are evaluated sequentially. Keywords take precedence over extensions.*
 
-## 9. Detailed Usage Examples
+## $\color{#58a6ff}{\\textsf{Detailed Usage Examples}}$
 When running in CLI mode, interact with the prompt:
 ```text
 > 1
@@ -162,7 +162,7 @@ Moves: 25 files
 Proceed with these moves? (y/n): y
 ```
 
-## 10. Safe Mode & Security
+## $\color{#58a6ff}{\\textsf{Safe Mode & Security}}$
 > [!CAUTION]
 > Never run organization scripts blindly on project roots. 
 
@@ -172,90 +172,90 @@ Proceed with these moves? (y/n): y
 - Build Folders: `bin`, `build`, `node_modules`
 SFORA will *never* organize its own source code.
 
-## 11. Deduplication Algorithm
+## $\color{#58a6ff}{\\textsf{Deduplication Algorithm}}$
 SFORA uses a cryptographic approach for identifying duplicates:
 1. It ignores filenames and timestamps.
 2. It generates a **SHA-256 hash** of the file buffer stream.
 3. It maps `Hash -> FilePath`. If a hash collision occurs, a duplicate is identified.
 
-## 12. Undo Mechanism
+## $\color{#58a6ff}{\\textsf{Undo Mechanism}}$
 The `UndoJournal.java` logs transactions to `action_log.txt`. 
 If you invoke Undo, the system reads the log in reverse, verifies the file exists at the new location, and issues a reverse `Files.move()` operation.
 
-## 13. Performance & Benchmarks
+## $\color{#58a6ff}{\\textsf{Performance & Benchmarks}}$
 - **Time Complexity**: $O(N)$ for $N$ files during rule matching. Deduplication is $O(N \times S)$ where $S$ is file size (due to hashing).
 - **Memory**: $O(1)$ stream buffering ensures large files don't cause `OutOfMemoryError`.
 
-## 14. Testing Instructions
+## $\color{#58a6ff}{\\textsf{Testing Instructions}}$
 If you want to modify SFORA, run the tests to ensure regressions aren't introduced:
 ```bash
 javac -d bin src/*.java
 java -cp bin SforaTests
 ```
 
-## 15. Environment Variables
+## $\color{#58a6ff}{\\textsf{Environment Variables}}$
 Currently, SFORA does not rely on environment variables, relying instead on `rules.txt` in the active working directory.
 
-## 16. Error Handling & Logs
+## $\color{#58a6ff}{\\textsf{Error Handling & Logs}}$
 SFORA catches `IOException` during file movements and skips problematic files. Execution reports are appended to `organize_report.txt`.
 
-## 17. Build Automation Notes
+## $\color{#58a6ff}{\\textsf{Build Automation Notes}}$
 SFORA purposely avoids Maven/Gradle to remain a lightweight, single-command compile project. It depends only on `java.base` and `java.desktop`.
 
-## 18. Troubleshooting Guide
+## $\color{#58a6ff}{\\textsf{Troubleshooting Guide}}$
 - **File Not Moving**: Ensure it isn't locked by another process (e.g., opened in Word).
 - **GUI Fails to Load**: Ensure X11/Display servers are running on Linux environments, or launch in CLI mode.
 
-## 19. Uninstall & Cleanup
+## $\color{#58a6ff}{\\textsf{Uninstall & Cleanup}}$
 SFORA is portable. To uninstall:
 1. Delete the `SFORA-Smart-File-Organizer` directory.
 2. Delete `organize_report.txt`, `rules.txt`, and `action_log.txt` if placed elsewhere.
 
-## 20. Data Privacy Statement
+## $\color{#58a6ff}{\\textsf{Data Privacy Statement}}$
 SFORA is 100% offline. It does not phone home, use telemetry, or upload file metadata to any server. 
 
-## 21. Known Limitations
+## $\color{#58a6ff}{\\textsf{Known Limitations}}$
 - Network Drives (SMB/NFS) may experience slower deduplication times due to network bottlenecking during hashing.
 - Symlinks are currently treated as physical files.
 
-## 22. Roadmap
+## $\color{#58a6ff}{\\textsf{Roadmap}}$
 - [ ] Add parallel streaming for faster folder scanning.
 - [ ] Implement a system-tray daemon for real-time monitoring.
 - [ ] Support regex in `rules.txt`.
 
-## 23. Contributing Guidelines
+## $\color{#58a6ff}{\\textsf{Contributing Guidelines}}$
 1. Fork the repository.
 2. Create a feature branch (`git checkout -b feature/AmazingFeature`).
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
 4. Push to the branch (`git push origin feature/AmazingFeature`).
 5. Open a Pull Request.
 
-## 24. Issue Reporting
+## $\color{#58a6ff}{\\textsf{Issue Reporting}}$
 Found a bug? Open an issue on GitHub with:
 - OS version
 - Java version
 - Steps to reproduce
 
-## 25. Code of Conduct
+## $\color{#58a6ff}{\\textsf{Code of Conduct}}$
 Please be respectful and constructive in issues and pull requests. Harassment or abusive language will not be tolerated.
 
-## 26. FAQ
+## $\color{#58a6ff}{\\textsf{FAQ}}$
 **Q: Can I run this on a Mac?**  
 A: Yes, it is fully cross-platform (Windows, macOS, Linux).
 
 **Q: Will it delete my files?**  
 A: No. SFORA uses `Files.move()` and deduplication only *reports* duplicates without deleting them.
 
-## 27. Acknowledgments
+## $\color{#58a6ff}{\\textsf{Acknowledgments}}$
 Built utilizing the native power of Java NIO and Swing. 
 
-## 28. Changelog
+## $\color{#58a6ff}{\\textsf{Changelog}}$
 - **v1.0.0**: Initial Release (Rule matching, Swing GUI, Safe Mode).
 
-## 29. Contact & Maintainer Info
+## $\color{#58a6ff}{\\textsf{Contact & Maintainer Info}}$
 For serious inquiries or support, please open a GitHub Issue or reach out via the repository's author profile.
 
-## 30. License
+## $\color{#58a6ff}{\\textsf{License}}$
 Distributed under the MIT License. See `LICENSE` (if present) for more information.
 
 ---
