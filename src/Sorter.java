@@ -16,6 +16,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Sorter {
 
@@ -135,24 +140,53 @@ public class Sorter {
         }
 
         System.out.println("\nScanning for copied files (content-based)...");
-        Map<String, String> fileFingerprints = new HashMap<>();
-        int dups = 0;
+        System.out.println("Grouping files by size (Fast-Pass)...");
+        
+        Map<Long, List<File>> filesBySize = new HashMap<>();
+        for (File f : allFiles) {
+            long size = f.length();
+            filesBySize.computeIfAbsent(size, k -> new ArrayList<>()).add(f);
+        }
 
-        for (File currentFile : allFiles) {
-            String fingerprint = buildFingerprint(currentFile);
-            if (fingerprint == null) {
-                continue;
-            }
-
-            if (fileFingerprints.containsKey(fingerprint)) {
-                System.out.println("Found duplicate: " + currentFile.getAbsolutePath());
-                System.out.println("  matches: " + fileFingerprints.get(fingerprint));
-                dups++;
-            } else {
-                fileFingerprints.put(fingerprint, currentFile.getAbsolutePath());
+        List<List<File>> potentialDups = new ArrayList<>();
+        for (List<File> list : filesBySize.values()) {
+            if (list.size() > 1) {
+                potentialDups.add(list);
             }
         }
-        System.out.println("Finished. Found " + dups + " duplicate files.");
+
+        if (potentialDups.isEmpty()) {
+            System.out.println("Finished. Found 0 duplicate files.");
+            return;
+        }
+
+        System.out.println("Hashing " + potentialDups.size() + " size-collision groups concurrently...");
+        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        AtomicInteger dups = new AtomicInteger(0);
+        ConcurrentHashMap<String, String> fileFingerprints = new ConcurrentHashMap<>();
+
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
+
+        for (List<File> group : potentialDups) {
+            for (File currentFile : group) {
+                futures.add(CompletableFuture.runAsync(() -> {
+                    String fingerprint = buildFingerprint(currentFile);
+                    if (fingerprint != null) {
+                        String existing = fileFingerprints.putIfAbsent(fingerprint, currentFile.getAbsolutePath());
+                        if (existing != null) {
+                            System.out.println("Found duplicate: " + currentFile.getAbsolutePath());
+                            System.out.println("  matches: " + existing);
+                            dups.incrementAndGet();
+                        }
+                    }
+                }, executor));
+            }
+        }
+
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+        executor.shutdown();
+
+        System.out.println("Finished. Found " + dups.get() + " duplicate files.");
     }
 
     public void fixFilenames(File folder) {

@@ -4,11 +4,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class RuleEngine {
 
     private final Map<String, String> wordRules = new HashMap<>();
     private final Map<String, String> extensionRules = new HashMap<>();
+    private final Map<Pattern, String> regexRules = new HashMap<>();
     private final File rulesFile;
     private final FileNameNormalizer normalizer;
 
@@ -29,11 +32,12 @@ public class RuleEngine {
     public void reloadRules() {
         wordRules.clear();
         extensionRules.clear();
+        regexRules.clear();
         loadRules();
     }
 
     public String getSummary() {
-        return "Rules loaded: " + wordRules.size() + " keyword, " + extensionRules.size() + " extension";
+        return "Rules loaded: " + wordRules.size() + " keyword, " + extensionRules.size() + " extension, " + regexRules.size() + " regex";
     }
 
     public File resolveTarget(File item, File root, String mode) {
@@ -43,9 +47,18 @@ public class RuleEngine {
 
         String folderTarget = null;
         if ("rules".equals(mode) || "hybrid".equals(mode)) {
-            for (Map.Entry<String, String> entry : wordRules.entrySet()) {
-                if (name.contains(entry.getKey())) {
+            for (Map.Entry<Pattern, String> entry : regexRules.entrySet()) {
+                if (entry.getKey().matcher(item.getName()).find()) {
                     folderTarget = entry.getValue();
+                    break;
+                }
+            }
+            if (folderTarget == null) {
+                for (Map.Entry<String, String> entry : wordRules.entrySet()) {
+                    if (name.contains(entry.getKey())) {
+                        folderTarget = entry.getValue();
+                        break;
+                    }
                 }
             }
             if (folderTarget == null) {
@@ -104,13 +117,15 @@ public class RuleEngine {
                     }
 
                     String ruleType = left[0].trim().toUpperCase();
-                    String matchWord = left[1].trim().toLowerCase();
+                    String matchWord = left[1].trim();
                     String destination = right[1].trim();
 
                     if ("KEYWORD".equals(ruleType)) {
-                        wordRules.put(matchWord, destination);
+                        wordRules.put(matchWord.toLowerCase(), destination);
                     } else if ("EXTENSION".equals(ruleType)) {
-                        extensionRules.put(matchWord, destination);
+                        extensionRules.put(matchWord.toLowerCase(), destination);
+                    } else if ("REGEX".equals(ruleType)) {
+                        regexRules.put(Pattern.compile(matchWord), destination);
                     }
                 } catch (Exception ignored) {
                 }

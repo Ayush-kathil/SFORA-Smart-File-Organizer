@@ -242,6 +242,23 @@ public class GUI extends JFrame {
         folderPathBox = new JTextField("Select a folder to begin");
         folderPathBox.setEditable(false);
         folderPathBox.setFont(new Font("Consolas", Font.PLAIN, 13));
+        folderPathBox.setTransferHandler(new javax.swing.TransferHandler() {
+            @Override
+            public boolean canImport(TransferSupport support) {
+                return support.isDataFlavorSupported(java.awt.datatransfer.DataFlavor.javaFileListFlavor);
+            }
+            @Override
+            public boolean importData(TransferSupport support) {
+                try {
+                    java.util.List<File> files = (java.util.List<File>) support.getTransferable().getTransferData(java.awt.datatransfer.DataFlavor.javaFileListFlavor);
+                    if (!files.isEmpty() && files.get(0).isDirectory()) {
+                        setSelectedFolder(files.get(0), "drag and drop");
+                        return true;
+                    }
+                } catch (Exception e) {}
+                return false;
+            }
+        });
         styleTextComponent(folderPathBox);
 
         ModernButton browseBtn = createButton("Browse", UIManager.getIcon("FileView.directoryIcon"), accent, textPrimary);
@@ -706,7 +723,7 @@ public class GUI extends JFrame {
 
     private void configureLookAndFeel() {
         try {
-            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ignored) {
         }
     }

@@ -5,6 +5,21 @@ import javax.swing.SwingUtilities;
 public class App {
     
     public static void main(String[] args) {
+        if (args.length > 0) {
+            if ("--gui".equalsIgnoreCase(args[0])) {
+                SwingUtilities.invokeLater(() -> {
+                    GUI window = new GUI();
+                    window.setLocationRelativeTo(null);
+                    window.setVisible(true);
+                });
+                return;
+            } else if ("--cli".equalsIgnoreCase(args[0])) {
+                Scanner scan = new Scanner(System.in);
+                runCLI(scan);
+                return;
+            }
+        }
+
         Scanner scan = new Scanner(System.in);
         
         System.out.println("----- File Organizer Project -----");
