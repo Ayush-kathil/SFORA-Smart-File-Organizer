@@ -1,7 +1,4 @@
 <div align="center">
-  <!-- UI Issue 19: Logo Placeholder -->
-  <img src="https://via.placeholder.com/150?text=SFORA+Logo" alt="SFORA Logo" width="150"/>
-
   <h1>SFORA - Smart File Organizer</h1>
   
   <p>
@@ -38,16 +35,16 @@
 - [Architecture](#7-architecture)
 - [Configuration Deep Dive](#8-configuration-deep-dive)
 - [Detailed Usage Examples](#9-detailed-usage-examples)
-- [Safe Mode & Security](#10-safe-mode--security)
+- [Safe Mode and Security](#10-safe-mode--security)
 - [Deduplication Algorithm](#11-deduplication-algorithm)
 - [Undo Mechanism](#12-undo-mechanism)
-- [Performance & Benchmarks](#13-performance--benchmarks)
+- [Performance and Benchmarks](#13-performance--benchmarks)
 - [Testing Instructions](#14-testing-instructions)
 - [Environment Variables](#15-environment-variables)
-- [Error Handling & Logs](#16-error-handling--logs)
+- [Error Handling and Logs](#16-error-handling--logs)
 - [Build Automation Notes](#17-build-automation-notes)
 - [Troubleshooting Guide](#18-troubleshooting-guide)
-- [Uninstall & Cleanup](#19-uninstall--cleanup)
+- [Uninstall and Cleanup](#19-uninstall--cleanup)
 - [Data Privacy Statement](#20-data-privacy-statement)
 - [Known Limitations](#21-known-limitations)
 - [Roadmap](#22-roadmap)
@@ -57,7 +54,7 @@
 - [FAQ](#26-faq)
 - [Acknowledgments](#27-acknowledgments)
 - [Changelog](#28-changelog)
-- [Contact & Maintainer Info](#29-contact--maintainer-info)
+- [Contact and Maintainer Info](#29-contact--maintainer-info)
 - [License](#30-license)
 
 </details>
@@ -162,7 +159,7 @@ Moves: 25 files
 Proceed with these moves? (y/n): y
 ```
 
-## $\color{#58a6ff}{\\textsf{Safe Mode & Security}}$
+## $\color{#58a6ff}{\\textsf{Safe Mode and Security}}$
 > [!CAUTION]
 > Never run organization scripts blindly on project roots. 
 
@@ -182,7 +179,7 @@ SFORA uses a cryptographic approach for identifying duplicates:
 The `UndoJournal.java` logs transactions to `action_log.txt`. 
 If you invoke Undo, the system reads the log in reverse, verifies the file exists at the new location, and issues a reverse `Files.move()` operation.
 
-## $\color{#58a6ff}{\\textsf{Performance & Benchmarks}}$
+## $\color{#58a6ff}{\\textsf{Performance and Benchmarks}}$
 - **Time Complexity**: $O(N)$ for $N$ files during rule matching. Deduplication is $O(N \times S)$ where $S$ is file size (due to hashing).
 - **Memory**: $O(1)$ stream buffering ensures large files don't cause `OutOfMemoryError`.
 
@@ -196,7 +193,7 @@ java -cp bin SforaTests
 ## $\color{#58a6ff}{\\textsf{Environment Variables}}$
 Currently, SFORA does not rely on environment variables, relying instead on `rules.txt` in the active working directory.
 
-## $\color{#58a6ff}{\\textsf{Error Handling & Logs}}$
+## $\color{#58a6ff}{\\textsf{Error Handling and Logs}}$
 SFORA catches `IOException` during file movements and skips problematic files. Execution reports are appended to `organize_report.txt`.
 
 ## $\color{#58a6ff}{\\textsf{Build Automation Notes}}$
@@ -206,7 +203,7 @@ SFORA purposely avoids Maven/Gradle to remain a lightweight, single-command comp
 - **File Not Moving**: Ensure it isn't locked by another process (e.g., opened in Word).
 - **GUI Fails to Load**: Ensure X11/Display servers are running on Linux environments, or launch in CLI mode.
 
-## $\color{#58a6ff}{\\textsf{Uninstall & Cleanup}}$
+## $\color{#58a6ff}{\\textsf{Uninstall and Cleanup}}$
 SFORA is portable. To uninstall:
 1. Delete the `SFORA-Smart-File-Organizer` directory.
 2. Delete `organize_report.txt`, `rules.txt`, and `action_log.txt` if placed elsewhere.
@@ -252,7 +249,7 @@ Built utilizing the native power of Java NIO and Swing.
 ## $\color{#58a6ff}{\\textsf{Changelog}}$
 - **v1.0.0**: Initial Release (Rule matching, Swing GUI, Safe Mode).
 
-## $\color{#58a6ff}{\\textsf{Contact & Maintainer Info}}$
+## $\color{#58a6ff}{\\textsf{Contact and Maintainer Info}}$
 For serious inquiries or support, please open a GitHub Issue or reach out via the repository's author profile.
 
 ## $\color{#58a6ff}{\\textsf{License}}$
