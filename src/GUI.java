@@ -767,13 +767,11 @@ public class GUI extends JFrame {
     }
 
     private void chooseFolder() {
-        JFileChooser picker = new JFileChooser();
-        if (selectedFolder != null && selectedFolder.exists()) {
-            picker.setCurrentDirectory(selectedFolder);
-        }
-        picker.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        if (picker.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            setSelectedFolder(picker.getSelectedFile(), "browse dialog");
+        CustomFolderBrowser browser = new CustomFolderBrowser(this, selectedFolder, appBg, cardBg, accent, textPrimary, textSoft);
+        browser.setVisible(true);
+        File result = browser.getSelectedFolder();
+        if (result != null) {
+            setSelectedFolder(result, "browse dialog");
         }
     }
 
@@ -1409,7 +1407,10 @@ public class GUI extends JFrame {
         private Color baseColor;
         private Color hoverColor;
         private Color pressColor;
+        private Color currentColor;
+        private Color targetColor;
         private int arc = 12;
+        private Timer animTimer;
 
         ModernButton(String text, Icon icon) {
             super(text, icon);
@@ -1418,11 +1419,36 @@ public class GUI extends JFrame {
             setContentAreaFilled(false);
             setOpaque(false);
 
+            animTimer = new Timer(15, e -> {
+                if (currentColor != null && targetColor != null && !currentColor.equals(targetColor)) {
+                    currentColor = mix(currentColor, targetColor, 0.2f);
+                    repaint();
+                } else {
+                    animTimer.stop();
+                }
+            });
+
             addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
                 public void mouseEntered(java.awt.event.MouseEvent e) {
                     if (isEnabled()) {
-                        animateFlash();
+                        targetColor = hoverColor;
+                        animTimer.start();
+                    }
+                }
+                @Override
+                public void mouseExited(java.awt.event.MouseEvent e) {
+                    if (isEnabled()) {
+                        targetColor = baseColor;
+                        animTimer.start();
+                    }
+                }
+                @Override
+                public void mousePressed(java.awt.event.MouseEvent e) {
+                    if (isEnabled()) {
+                        currentColor = pressColor;
+                        targetColor = hoverColor;
+                        repaint();
                     }
                 }
             });
@@ -1430,21 +1456,11 @@ public class GUI extends JFrame {
 
         void setBackgroundColor(Color color) {
             this.baseColor = color;
-            this.hoverColor = mix(color, new Color(255, 255, 255), 0.08f);
+            this.currentColor = color;
+            this.targetColor = color;
+            this.hoverColor = mix(color, new Color(255, 255, 255), 0.16f);
             this.pressColor = mix(color, new Color(0, 0, 0), 0.15f);
             repaint();
-        }
-
-        private void animateFlash() {
-            Color original = hoverColor;
-            hoverColor = mix(baseColor, Color.WHITE, 0.16f);
-            repaint();
-            Timer timer = new Timer(110, e -> {
-                hoverColor = original;
-                repaint();
-            });
-            timer.setRepeats(false);
-            timer.start();
         }
 
         @Override
@@ -1452,13 +1468,9 @@ public class GUI extends JFrame {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            Color fill = baseColor;
+            Color fill = (currentColor != null) ? currentColor : baseColor;
             if (!isEnabled()) {
                 fill = mix(baseColor, Color.GRAY, 0.35f);
-            } else if (getModel().isPressed()) {
-                fill = pressColor;
-            } else if (getModel().isRollover()) {
-                fill = hoverColor;
             }
 
             g2.setColor(fill);
