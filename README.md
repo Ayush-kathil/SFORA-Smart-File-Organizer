@@ -29,7 +29,7 @@
 - [Motivation](#1-motivation)
 - [Prerequisites](#2-prerequisites)
 - [Quick Start Guide](#3-quick-start-guide)
-- [Screenshots](#4-screenshots)
+
 - [CLI vs. GUI Feature Matrix](#5-cli-vs-gui-feature-matrix)
 - [Supported File Types](#6-supported-file-types)
 - [Architecture](#7-architecture)
@@ -86,12 +86,7 @@ Get up and running in three steps:
    java -cp bin App
    ```
 
-## $\color{#58a6ff}{\\textsf{Screenshots}}$
-*Placeholders for upcoming demonstration media.*
 
-| GUI Mode | CLI Mode |
-| :---: | :---: |
-| ![GUI Placeholder](https://via.placeholder.com/400x250?text=GUI+Screenshot) | ![CLI Placeholder](https://via.placeholder.com/400x250?text=CLI+Screenshot) |
 
 ## $\color{#58a6ff}{\\textsf{CLI vs. GUI Feature Matrix}}$
 | Feature | CLI | GUI |
